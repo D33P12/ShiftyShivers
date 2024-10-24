@@ -20,6 +20,8 @@ public class EnemyAIBase : MonoBehaviour
 
     [SerializeField] List<EnemyAIBase> nearbyEnemies;
     
+    [SerializeField] HidingZone hidingZone;
+    
     private UnityEngine.AI.NavMeshAgent agent;
     private float idleTimer = 0f;
     private int currentPatrolPoint = 0;
@@ -58,7 +60,7 @@ public class EnemyAIBase : MonoBehaviour
 
     void CheckForPlayer()
     {
-        if (IsPlayerInCone() && DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
+        if (!hidingZone.playerIsHiding && IsPlayerInCone() && DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
         {
             ChangeState(AIState.CHASE); 
             AlertNearbyEnemies(playerObject.transform.position);
