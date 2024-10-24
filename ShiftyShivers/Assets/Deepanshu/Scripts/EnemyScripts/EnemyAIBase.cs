@@ -14,6 +14,9 @@ public class EnemyAIBase : MonoBehaviour
     [SerializeField] float patrolRadius = 3f;
     [SerializeField] List<Transform> patrolPoints = new List<Transform>();
     [SerializeField] float idleDelay = 3f; 
+    
+    [SerializeField] float fieldOfView = 45f;
+    [SerializeField] int coneResolution = 10;
 
     private UnityEngine.AI.NavMeshAgent agent;
     private float idleTimer = 0f;
@@ -53,7 +56,7 @@ public class EnemyAIBase : MonoBehaviour
 
     void CheckForPlayer()
     {
-        if (DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
+        if (IsPlayerInCone() && DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
         {
             ChangeState(AIState.CHASE); 
         }
@@ -66,6 +69,18 @@ public class EnemyAIBase : MonoBehaviour
             }
         }
     }
+    bool IsPlayerInCone()
+    {
+        if (playerObject == null) return false;
+
+        Vector3 directionToPlayer = playerObject.transform.position - transform.position;
+        directionToPlayer.y = 0; 
+
+        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+
+        return angleToPlayer < fieldOfView / 2f; 
+    }
+
 
     bool DistanceCheck(Vector3 position1, Vector3 position2, float distance)
     {
@@ -140,5 +155,17 @@ public class EnemyAIBase : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
     }
-    
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Vector3 forwardDirection = transform.forward * playerDistance;
+
+        Vector3 leftBoundary = Quaternion.Euler(0, -fieldOfView / 2f, 0) * forwardDirection;
+        Vector3 rightBoundary = Quaternion.Euler(0, fieldOfView / 2f, 0) * forwardDirection;
+
+        Gizmos.DrawRay(transform.position, leftBoundary);
+        Gizmos.DrawRay(transform.position, rightBoundary);
+        Gizmos.DrawWireSphere(transform.position, playerDistance); 
+    }
+
 }
