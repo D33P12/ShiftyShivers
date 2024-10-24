@@ -18,6 +18,8 @@ public class EnemyAIBase : MonoBehaviour
     [SerializeField] float fieldOfView = 45f;
     [SerializeField] int coneResolution = 10;
 
+    [SerializeField] List<EnemyAIBase> nearbyEnemies;
+    
     private UnityEngine.AI.NavMeshAgent agent;
     private float idleTimer = 0f;
     private int currentPatrolPoint = 0;
@@ -59,6 +61,7 @@ public class EnemyAIBase : MonoBehaviour
         if (IsPlayerInCone() && DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
         {
             ChangeState(AIState.CHASE); 
+            AlertNearbyEnemies(playerObject.transform.position);
         }
         else if (state == AIState.CHASE)
         {
@@ -69,6 +72,24 @@ public class EnemyAIBase : MonoBehaviour
             }
         }
     }
+    
+    void AlertNearbyEnemies(Vector3 lastKnownPosition)
+    {
+        foreach (EnemyAIBase enemy in nearbyEnemies)
+        {
+            enemy.ReceiveAlert(lastKnownPosition);
+        }
+    }
+
+    public void ReceiveAlert(Vector3 lastKnownPosition)
+    {
+        if (state != AIState.CHASE)  
+        {
+            ChangeState(AIState.CHASE);
+            SetDestination(lastKnownPosition);
+        }
+    }
+    
     bool IsPlayerInCone()
     {
         if (playerObject == null) return false;
