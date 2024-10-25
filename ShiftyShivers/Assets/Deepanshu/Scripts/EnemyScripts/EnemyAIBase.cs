@@ -22,7 +22,7 @@ public class EnemyAIBase : MonoBehaviour
     private float alertTimer = 0f;
     [SerializeField] List<EnemyAIBase> nearbyEnemies;
     
-    [SerializeField] HidingZone hidingZone;
+    [SerializeField] List<HidingZone> hidingZone;
     
     private UnityEngine.AI.NavMeshAgent agent;
     private float idleTimer = 0f;
@@ -64,7 +64,7 @@ public class EnemyAIBase : MonoBehaviour
     {
         bool playerIsStationary = playerObject.GetComponent<PlayerController>().IsPlayerStationary();
 
-        if (!hidingZone.playerIsHiding && IsPlayerInCone() && DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
+        if (!IsPlayerInAnyHidingZone() && IsPlayerInCone() && DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
         {
             if (playerIsStationary)
             {
@@ -96,7 +96,17 @@ public class EnemyAIBase : MonoBehaviour
             alertTimer = 0f;
         }
     }
-    
+    private bool IsPlayerInAnyHidingZone()
+    {
+        foreach (HidingZone zone in hidingZone)
+        {
+            if (zone.playerIsHiding)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     void AlertNearbyEnemies(Vector3 lastKnownPosition)
     {
         foreach (EnemyAIBase enemy in nearbyEnemies)

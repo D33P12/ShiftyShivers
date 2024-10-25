@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField] private List<EnemyAIBase> nearbyEnemies;
     [SerializeField] private float idleAlertThreshold = 5f;
-    [SerializeField] private HidingZone hidingZone;
+    [SerializeField] private List<HidingZone> hidingZone;
     
     [SerializeField] private TextMeshProUGUI alertCountdownText; 
     private float alertTimer = 0f;
@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour
             playerRigidbody.velocity = new Vector3(0f, playerRigidbody.velocity.y, 0f);
             TogglePlayerBody(false);
             
-            if (hidingZone != null && !hidingZone.playerIsHiding) 
+            if (!IsPlayerHiding())
             {
                 int randomIndex = Random.Range(0, placeholderPrefabs.Count);
                 placeholderObject = Instantiate(placeholderPrefabs[randomIndex], playerTransform.position,
@@ -116,7 +116,7 @@ public class PlayerController : MonoBehaviour
 
             isMoving = false;
         }
-        else if (!hidingZone.playerIsHiding)
+        else if(!IsPlayerHiding())
         {
             alertTimer += Time.deltaTime;
             float timeRemaining = Mathf.Max(idleAlertThreshold - alertTimer, 0f);
@@ -132,6 +132,17 @@ public class PlayerController : MonoBehaviour
                 alertTimer = 0f;  
             }
         }
+    }
+    private bool IsPlayerHiding()
+    {
+        foreach (var zone in hidingZone)
+        {
+            if (zone.playerIsHiding)
+            {
+                return true;
+            }
+        }
+        return false;
     }
     private void AlertNearbyEnemies()
     {
