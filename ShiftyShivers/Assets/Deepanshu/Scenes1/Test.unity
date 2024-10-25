@@ -1946,6 +1946,11 @@ MonoBehaviour:
   playerRigidbody: {fileID: 880115982}
   walkSpeed: 10
   rotationSpeed: 10
+  playerBodyMeshRenderer: {fileID: 880115984}
+  placeholderPrefabs:
+  - {fileID: 7902855922810056826, guid: 62b6adb49387f7e4eaa3a56d08deea46, type: 3}
+  - {fileID: 7902855922810056826, guid: 43c9c6d51502ae94b93369c07d6cc1b8, type: 3}
+  - {fileID: 7902855922810056826, guid: 5362dc6c6f9f7944da938631b888360d, type: 3}
   cinemachineBrain: {fileID: 1988725259}
 --- !u!4 &861183691
 Transform:
