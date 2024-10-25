@@ -9,7 +9,7 @@ enum AIState
 }
 public class EnemyAIBase : MonoBehaviour
 {
-  [SerializeField] GameObject playerObject;
+    [SerializeField] GameObject playerObject;
     [SerializeField] float playerDistance = 10f;
     [SerializeField] float patrolRadius = 3f;
     [SerializeField] List<Transform> patrolPoints = new List<Transform>();
@@ -17,7 +17,9 @@ public class EnemyAIBase : MonoBehaviour
     
     [SerializeField] float fieldOfView = 45f;
     [SerializeField] int coneResolution = 10;
-
+    
+    [SerializeField] private float idleAlertThreshold = 5f; 
+    private float alertTimer = 0f;
     [SerializeField] List<EnemyAIBase> nearbyEnemies;
     
     [SerializeField] HidingZone hidingZone;
@@ -60,10 +62,26 @@ public class EnemyAIBase : MonoBehaviour
 
     void CheckForPlayer()
     {
+        bool playerIsStationary = playerObject.GetComponent<PlayerController>().IsPlayerStationary();
+
         if (!hidingZone.playerIsHiding && IsPlayerInCone() && DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
         {
-            ChangeState(AIState.CHASE); 
-            AlertNearbyEnemies(playerObject.transform.position);
+            if (playerIsStationary)
+            {
+                alertTimer += Time.deltaTime;
+                if (alertTimer >= idleAlertThreshold)
+                {
+                    ChangeState(AIState.CHASE);
+                    AlertNearbyEnemies(playerObject.transform.position);
+                    alertTimer = 0f;
+                }
+            }
+            else
+            {
+                ChangeState(AIState.CHASE);
+                AlertNearbyEnemies(playerObject.transform.position);
+                alertTimer = 0f;
+            }
         }
         else if (state == AIState.CHASE)
         {
@@ -72,6 +90,10 @@ public class EnemyAIBase : MonoBehaviour
             {
                 ChangeState(AIState.IDLE); 
             }
+        }
+        else
+        {
+            alertTimer = 0f;
         }
     }
     
