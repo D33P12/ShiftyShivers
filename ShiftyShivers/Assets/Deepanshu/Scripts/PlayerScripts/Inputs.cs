@@ -105,6 +105,76 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""PlayerInteract"",
+            ""id"": ""d29337b7-144d-4047-b022-6716e77e7d52"",
+            ""actions"": [
+                {
+                    ""name"": ""OptionMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""ef55a341-3c48-421f-8f4a-56419e4876fd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PickUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""e04f4e4a-5590-426a-8b2f-865505f8e46e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""a2fa601d-cc9c-44e0-844f-16c01f03ea52"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OptionMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8c1b0fab-c5c2-4c9a-8c47-bf4ad42f99da"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OptionMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d2f42278-4d7a-475a-9b91-f203cd1080a2"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5f916eec-9409-4995-8a0f-f6b26b60ef10"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -112,6 +182,10 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         // PlayerMovement
         m_PlayerMovement = asset.FindActionMap("PlayerMovement", throwIfNotFound: true);
         m_PlayerMovement_Move = m_PlayerMovement.FindAction("Move", throwIfNotFound: true);
+        // PlayerInteract
+        m_PlayerInteract = asset.FindActionMap("PlayerInteract", throwIfNotFound: true);
+        m_PlayerInteract_OptionMenu = m_PlayerInteract.FindAction("OptionMenu", throwIfNotFound: true);
+        m_PlayerInteract_PickUp = m_PlayerInteract.FindAction("PickUp", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -215,8 +289,67 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         }
     }
     public PlayerMovementActions @PlayerMovement => new PlayerMovementActions(this);
+
+    // PlayerInteract
+    private readonly InputActionMap m_PlayerInteract;
+    private List<IPlayerInteractActions> m_PlayerInteractActionsCallbackInterfaces = new List<IPlayerInteractActions>();
+    private readonly InputAction m_PlayerInteract_OptionMenu;
+    private readonly InputAction m_PlayerInteract_PickUp;
+    public struct PlayerInteractActions
+    {
+        private @Inputs m_Wrapper;
+        public PlayerInteractActions(@Inputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @OptionMenu => m_Wrapper.m_PlayerInteract_OptionMenu;
+        public InputAction @PickUp => m_Wrapper.m_PlayerInteract_PickUp;
+        public InputActionMap Get() { return m_Wrapper.m_PlayerInteract; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PlayerInteractActions set) { return set.Get(); }
+        public void AddCallbacks(IPlayerInteractActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PlayerInteractActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PlayerInteractActionsCallbackInterfaces.Add(instance);
+            @OptionMenu.started += instance.OnOptionMenu;
+            @OptionMenu.performed += instance.OnOptionMenu;
+            @OptionMenu.canceled += instance.OnOptionMenu;
+            @PickUp.started += instance.OnPickUp;
+            @PickUp.performed += instance.OnPickUp;
+            @PickUp.canceled += instance.OnPickUp;
+        }
+
+        private void UnregisterCallbacks(IPlayerInteractActions instance)
+        {
+            @OptionMenu.started -= instance.OnOptionMenu;
+            @OptionMenu.performed -= instance.OnOptionMenu;
+            @OptionMenu.canceled -= instance.OnOptionMenu;
+            @PickUp.started -= instance.OnPickUp;
+            @PickUp.performed -= instance.OnPickUp;
+            @PickUp.canceled -= instance.OnPickUp;
+        }
+
+        public void RemoveCallbacks(IPlayerInteractActions instance)
+        {
+            if (m_Wrapper.m_PlayerInteractActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IPlayerInteractActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PlayerInteractActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PlayerInteractActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public PlayerInteractActions @PlayerInteract => new PlayerInteractActions(this);
     public interface IPlayerMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
+    }
+    public interface IPlayerInteractActions
+    {
+        void OnOptionMenu(InputAction.CallbackContext context);
+        void OnPickUp(InputAction.CallbackContext context);
     }
 }

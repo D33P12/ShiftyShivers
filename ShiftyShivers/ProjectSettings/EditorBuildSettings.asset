@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Deepanshu/Scenes1/MainMenu.unity
+    guid: 744e7f153451bef4eb8fdf2e3db73064
+  - enabled: 1
+    path: Assets/Deepanshu/Scenes1/Test.unity
+    guid: 17c615cd62b9e4144bde62a5a473388d
   m_configObjects: {}
