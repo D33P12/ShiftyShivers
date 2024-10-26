@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - PowerUp
+  - Keycard
+  - Door
   layers:
   - Default
   - TransparentFX

@@ -123,7 +123,7 @@ public class PlayerController : MonoBehaviour
             
             if (timeRemaining > 0f)
             {
-                alertCountdownText.text = $"Enemies alerting in: {timeRemaining:F1}s";  // Display countdown
+                alertCountdownText.text = $"Enemies alerting in: {timeRemaining:F1}s";  // Display countdown format if you wanna change it...
             }
             else
             {

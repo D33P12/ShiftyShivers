@@ -6,7 +6,7 @@ public class InputManager : MonoBehaviour
 {
    public event Action<Vector2> onMove;
    public event Action<bool> onOptionmenu;
-   public event Action<bool> onPickUP;
+   public event Action<bool> onInteract;
    
     private Inputs inputs;
     private Vector2 moveInput;
@@ -28,15 +28,13 @@ public class InputManager : MonoBehaviour
         
         inputs.PlayerMovement.Move.performed += OnMove;
         inputs.PlayerInteract.OptionMenu.performed += OnOptionmenu;
-        inputs.PlayerInteract.PickUp.performed += PickUp;
-        
+        inputs.PlayerInteract.Interact.performed += OnInteract;
     }
 
     private void EnableInput()
     {
         inputs.PlayerMovement.Enable();
         inputs.PlayerInteract.Enable();
-
     }
 
     private void DisableInput()
@@ -55,10 +53,10 @@ public class InputManager : MonoBehaviour
         bool isInteracting = context.ReadValueAsButton();
         onOptionmenu?.Invoke(isInteracting);
     }
-    private void PickUp(InputAction.CallbackContext context)
+    private void OnInteract(InputAction.CallbackContext context)
     {
-        bool isPickingUP = context.ReadValueAsButton();
-        onPickUP?.Invoke(isPickingUP);
+        bool isInteracting = context.ReadValueAsButton();
+        onInteract?.Invoke(isInteracting);
     }
     
     private void Update()
@@ -66,7 +64,6 @@ public class InputManager : MonoBehaviour
         if (onMove != null)
         {
             onMove(moveInput);
-
         }
     }
 

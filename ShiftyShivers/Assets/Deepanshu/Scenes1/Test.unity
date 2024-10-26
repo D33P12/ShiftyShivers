@@ -441,7 +441,7 @@ MonoBehaviour:
   idleDelay: 3
   fieldOfView: 90
   coneResolution: 10
-  idleAlertThreshold: 5
+  idleAlertThreshold: 10.11
   nearbyEnemies: []
   hidingZone:
   - {fileID: 329336189}
@@ -1144,7 +1144,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -1306,27 +1306,13 @@ GameObject:
   - component: {fileID: 440059986}
   - component: {fileID: 440059985}
   - component: {fileID: 440059984}
-  - component: {fileID: 440059983}
   m_Layer: 0
   m_Name: PowerUP (1)
-  m_TagString: Untagged
+  m_TagString: PowerUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &440059983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 440059982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed73553133db7804fb21c6a96b173a64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerCount: {fileID: 496337439}
 --- !u!65 &440059984
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2513,6 +2499,7 @@ GameObject:
   - component: {fileID: 880115983}
   - component: {fileID: 880115982}
   - component: {fileID: 880115987}
+  - component: {fileID: 880115988}
   m_Layer: 3
   m_Name: PlayerBody
   m_TagString: Player
@@ -2667,6 +2654,21 @@ MonoBehaviour:
   - {fileID: 280929147}
   alertCountdownText: {fileID: 1828960971}
   cinemachineBrain: {fileID: 1988725259}
+--- !u!114 &880115988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 880115981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6c8b383dad01d42a31294c45dfcd4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputManager: {fileID: 1171007778}
+  powerCount: {fileID: 496337439}
+  keyCard: {fileID: 1190040729}
 --- !u!1 &921011637
 GameObject:
   m_ObjectHideFlags: 0
@@ -3049,27 +3051,13 @@ GameObject:
   - component: {fileID: 996832726}
   - component: {fileID: 996832725}
   - component: {fileID: 996832724}
-  - component: {fileID: 996832723}
   m_Layer: 0
   m_Name: KeyCard
-  m_TagString: Untagged
+  m_TagString: Keycard
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &996832723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 996832722}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50eea2765d81b714caec09dc6b29c081, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  keyCount: {fileID: 1190040729}
 --- !u!135 &996832724
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3151,7 +3139,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.59, y: -1.2, z: -11.78}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.1137, y: 2.1137, z: 2.1137}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -3168,27 +3156,13 @@ GameObject:
   - component: {fileID: 1018300578}
   - component: {fileID: 1018300577}
   - component: {fileID: 1018300576}
-  - component: {fileID: 1018300575}
   m_Layer: 0
   m_Name: PowerUP
-  m_TagString: Untagged
+  m_TagString: PowerUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1018300575
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1018300573}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed73553133db7804fb21c6a96b173a64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerCount: {fileID: 496337439}
 --- !u!65 &1018300576
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5794,7 +5768,7 @@ MonoBehaviour:
   idleDelay: 3
   fieldOfView: 90
   coneResolution: 10
-  idleAlertThreshold: 5
+  idleAlertThreshold: 10.17
   nearbyEnemies:
   - {fileID: 138544071}
   hidingZone:
