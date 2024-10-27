@@ -5,15 +5,18 @@ using TMPro;
 
 public class InteractionScript : MonoBehaviour
 {
+    [SerializeField] private GameObject doorRef;
     [SerializeField] private InputManager inputManager;
     public TextMeshProUGUI powerCount;
     public TextMeshProUGUI keyCard;
-    public int PowerUPs { get; private set; }
+    
+    public int PowerUPs { get; private set; } 
     public int KeyCards { get; private set; }
-
+    
+    private GameObject doorSwitch;
     private GameObject nearbyPowerUp;
     private GameObject nearbyKeycard;
-
+    
     private void OnEnable()
     {
         inputManager.onInteract += OnInteract;
@@ -23,7 +26,6 @@ public class InteractionScript : MonoBehaviour
     {
         inputManager.onInteract -= OnInteract;
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("PowerUp"))
@@ -34,8 +36,11 @@ public class InteractionScript : MonoBehaviour
         {
             nearbyKeycard = other.gameObject;
         }
+        else if (other.CompareTag("Door"))
+        {
+            doorSwitch = other.gameObject;
+        }
     }
-
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("PowerUp") && nearbyPowerUp == other.gameObject)
@@ -46,8 +51,11 @@ public class InteractionScript : MonoBehaviour
         {
             nearbyKeycard = null;
         }
+        else if (other.CompareTag("Door") && doorSwitch == other.gameObject)
+        {
+            doorSwitch = null;
+        }
     }
-
     private void OnInteract(bool isInteracting)
     {
         if (isInteracting)
@@ -60,9 +68,12 @@ public class InteractionScript : MonoBehaviour
             {
                 CollectKeyCard(nearbyKeycard);
             }
+            else if (doorSwitch != null)
+            {
+                DoorToggle(doorSwitch);
+            }
         }
     }
-
     private void CollectPowerUp(GameObject powerUp)
     {
         GameManager.PowerUP += 1;
@@ -72,7 +83,6 @@ public class InteractionScript : MonoBehaviour
         Destroy(powerUp);
         nearbyPowerUp = null;
     }
-
     private void CollectKeyCard(GameObject keycard)
     {
         GameManager.keycard += 1;
@@ -81,5 +91,19 @@ public class InteractionScript : MonoBehaviour
         keyCard.text = "KeyCard: " + GameManager.keycard;
         Destroy(keycard);
         nearbyKeycard = null;
+    }
+    private void DoorToggle(GameObject doorSwitch)
+    {
+        if (GameManager.keycard > 0)
+        {
+            if (doorRef != null)
+            {
+                doorRef.SetActive(!doorRef.activeSelf);
+            }
+        }
+        else
+        {
+            Debug.Log("Door is locked");
+        }
     }
 }
