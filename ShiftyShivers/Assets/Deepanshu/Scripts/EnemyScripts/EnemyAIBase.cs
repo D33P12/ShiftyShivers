@@ -5,7 +5,8 @@ using UnityEngine.AI;
 
 enum AIState
 {
-    IDLE, PATROL, CHASE ,DEATH
+    IDLE, PATROL, CHASE ,DEATH, ATTACK
+
 }
 public class EnemyAIBase : MonoBehaviour
 {
@@ -23,6 +24,12 @@ public class EnemyAIBase : MonoBehaviour
     [SerializeField] List<EnemyAIBase> nearbyEnemies;
     
     [SerializeField] List<HidingZone> hidingZone;
+    
+    [SerializeField] public float damage;
+    public PlayerHealthScript playerHealth;
+    [SerializeField] float attackRange = 2f;
+    [SerializeField] float attackCooldown = 1f;
+    [SerializeField] float attackTimer = 0f;
     
     private UnityEngine.AI.NavMeshAgent agent;
     private float idleTimer = 0f;
@@ -53,6 +60,9 @@ public class EnemyAIBase : MonoBehaviour
             case AIState.CHASE:
                 Chase();
                 break;
+            case AIState.ATTACK:
+                Attack();
+                break;
         }
     }
 
@@ -66,7 +76,7 @@ public class EnemyAIBase : MonoBehaviour
     {
         bool playerIsStationary = playerObject.GetComponent<PlayerController>().IsPlayerStationary();
 
-        if (!IsPlayerInAnyHidingZone() && IsPlayerInCone() && DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
+        if (!IsPlayerInAnyHidingZone() && IsPlayerInCone() && DistanceCheck(transform.position, playerObject.transform.position, playerDistance) && state != AIState.ATTACK)
         {
             if (playerIsStationary)
             {
@@ -126,7 +136,7 @@ public class EnemyAIBase : MonoBehaviour
         }
     }
     
-    bool IsPlayerInCone()
+    public bool IsPlayerInCone()
     {
         if (playerObject == null) return false;
 
@@ -174,17 +184,61 @@ public class EnemyAIBase : MonoBehaviour
 
     void Chase()
     {
-        if (DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
+        if (DistanceCheck(transform.position, playerObject.transform.position, attackRange))
         {
-            SetDestination(playerObject.transform.position);
-            FacePlayer(); 
-            idleTimer = 0f; 
+            ChangeState(AIState.ATTACK);
+        }
+        else if (DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
+        {
+            if (IsPlayerInCone())
+            {
+                SetDestination(playerObject.transform.position);
+            }
+            else
+            {
+                idleTimer += Time.deltaTime;
+                if (idleTimer >= idleDelay)
+                {
+                    ChangeState(AIState.IDLE);
+                }
+            }
         }
         else
         {
             idleTimer += Time.deltaTime;
+            if (idleTimer >= idleDelay)
+            {
+                ChangeState(AIState.IDLE);
+            }
+        }
+
+        FacePlayer();
+    }
+    void Attack()
+    {
+        if (DistanceCheck(transform.position, playerObject.transform.position, attackRange))
+        {
+            attackTimer += Time.deltaTime;
+            if (attackTimer >= attackCooldown)
+            {
+                PerformAttack();
+                attackTimer = 0f;
+            }
+        }
+        else
+        {
+            ChangeState(AIState.CHASE);
+        }
+        FacePlayer();
+    }
+    void PerformAttack()
+    {
+        if (playerHealth != null)
+        {
+           GameManager.phealth -= damage;
         }
     }
+
 
     void SetDestination(Transform destinationTransform)
     {
@@ -233,4 +287,5 @@ public class EnemyAIBase : MonoBehaviour
         }
         Destroy(gameObject, 2f);
     }
+    
 }
