@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-enum AIState
+public enum AIState
 {
     IDLE, PATROL, CHASE ,DEATH, ATTACK
 
 }
+
 public class EnemyAIBase : MonoBehaviour
 {
     [SerializeField] GameObject playerObject;
@@ -31,6 +32,7 @@ public class EnemyAIBase : MonoBehaviour
     [SerializeField] float attackCooldown = 1f;
     [SerializeField] float attackTimer = 0f;
     
+    public AIState CurrentState => state;
     private UnityEngine.AI.NavMeshAgent agent;
     private float idleTimer = 0f;
     private int currentPatrolPoint = 0;
@@ -182,7 +184,7 @@ public class EnemyAIBase : MonoBehaviour
         return (currentPatrolPoint + 1) % patrolPoints.Count;
     }
 
-    void Chase()
+    public void Chase()
     {
         if (DistanceCheck(transform.position, playerObject.transform.position, attackRange))
         {

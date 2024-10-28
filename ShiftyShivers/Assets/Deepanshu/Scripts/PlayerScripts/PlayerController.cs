@@ -53,10 +53,13 @@ public class PlayerController : MonoBehaviour
         
         if (_movementDirection != Vector3.zero && !isMoving)
         {
-            TogglePlayerBody(true);
-            if (placeholderObject != null)
+            if (!IsEnemyInChaseState())
             {
-                Destroy(placeholderObject);
+                TogglePlayerBody(true);
+                if (placeholderObject != null)
+                {
+                    Destroy(placeholderObject);
+                }
             }
             isMoving = true;
             idleTimer = 0f;
@@ -94,10 +97,14 @@ public class PlayerController : MonoBehaviour
                 playerTransform.rotation = Quaternion.Slerp(playerTransform.rotation, targetRotation,
                     rotationSpeed * Time.deltaTime);
             }
-            TogglePlayerBody(true);
-            if (placeholderObject != null)
+
+            if (!IsEnemyInChaseState())
             {
-                Destroy(placeholderObject);
+                TogglePlayerBody(true);
+                if (placeholderObject != null)
+                {
+                    Destroy(placeholderObject);
+                }
             }
             isMoving = true;
             idleTimer = 0f;
@@ -105,13 +112,16 @@ public class PlayerController : MonoBehaviour
         else if (isMoving)
         {
             playerRigidbody.velocity = new Vector3(0f, playerRigidbody.velocity.y, 0f);
-            TogglePlayerBody(false);
-            
-            if (!IsPlayerHiding())
+            if (!IsEnemyInChaseState())
             {
-                int randomIndex = Random.Range(0, placeholderPrefabs.Count);
-                placeholderObject = Instantiate(placeholderPrefabs[randomIndex], playerTransform.position,
-                    Quaternion.identity);
+                TogglePlayerBody(false);
+
+                if (!IsPlayerHiding())
+                {
+                    int randomIndex = Random.Range(0, placeholderPrefabs.Count);
+                    placeholderObject = Instantiate(placeholderPrefabs[randomIndex], playerTransform.position,
+                        Quaternion.identity);
+                }
             }
 
             isMoving = false;
@@ -138,6 +148,17 @@ public class PlayerController : MonoBehaviour
         foreach (var zone in hidingZone)
         {
             if (zone.playerIsHiding)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    private bool IsEnemyInChaseState()
+    {
+        foreach (EnemyAIBase enemy in nearbyEnemies)
+        {
+            if (enemy != null && enemy.CurrentState == AIState.CHASE)
             {
                 return true;
             }
