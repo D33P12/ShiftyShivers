@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 enum AIState
 {
-    IDLE, PATROL, CHASE
+    IDLE, PATROL, CHASE ,DEATH
 }
 public class EnemyAIBase : MonoBehaviour
 {
@@ -38,6 +38,8 @@ public class EnemyAIBase : MonoBehaviour
 
     void Update()
     {
+        if (state == AIState.DEATH) return;
+        
         CheckForPlayer();
 
         switch (state)
@@ -110,7 +112,7 @@ public class EnemyAIBase : MonoBehaviour
     void AlertNearbyEnemies(Vector3 lastKnownPosition)
     {
         foreach (EnemyAIBase enemy in nearbyEnemies)
-        {
+        { 
             enemy.ReceiveAlert(lastKnownPosition);
         }
     }
@@ -222,5 +224,13 @@ public class EnemyAIBase : MonoBehaviour
         Gizmos.DrawRay(transform.position, rightBoundary);
         Gizmos.DrawWireSphere(transform.position, playerDistance); 
     }
-
+    public void DeathState()
+    {
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            agent.enabled = false;
+        }
+        Destroy(gameObject, 2f);
+    }
 }

@@ -8,6 +8,7 @@ TagManager:
   - PowerUp
   - Keycard
   - Door
+  - KillZone
   layers:
   - Default
   - TransparentFX
