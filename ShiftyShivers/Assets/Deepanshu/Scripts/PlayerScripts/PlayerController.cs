@@ -26,8 +26,6 @@ public class PlayerController : MonoBehaviour
     private bool isMoving;
     private float idleTimer = 0f;
     
-    [SerializeField] private CinemachineBrain cinemachineBrain;
-    
     private Vector3 _movementDirection;
     private void Start()
     {
@@ -76,26 +74,18 @@ public class PlayerController : MonoBehaviour
             alertTimer = 0f;
             alertCountdownText.text = string.Empty;
             
-            Transform activeCameraTransform = GetActiveCameraTransform();
+           
 
-            if (activeCameraTransform != null)
+            Vector3 velocity = _movementDirection * walkSpeed;
+        
+            playerRigidbody.velocity = new Vector3(velocity.x, playerRigidbody.velocity.y, velocity.z);
+        
+            if (_movementDirection != Vector3.zero)
             {
-                Vector3 cameraForward = activeCameraTransform.forward;
-                Vector3 cameraRight = activeCameraTransform.right;
-
-                cameraForward.y = 0;
-                cameraRight.y = 0;
-                cameraForward.Normalize();
-                cameraRight.Normalize();
-
-                Vector3 adjustedMovement = cameraRight * _movementDirection.x + cameraForward * _movementDirection.z;
-                Vector3 velocity = adjustedMovement * walkSpeed;
-                playerRigidbody.velocity = new Vector3(velocity.x, playerRigidbody.velocity.y, velocity.z);
-
-                Quaternion targetRotation = Quaternion.LookRotation(adjustedMovement);
+                Quaternion targetRotation = Quaternion.LookRotation(_movementDirection);
                 targetRotation = Quaternion.Euler(0f, targetRotation.eulerAngles.y, 0f);
-                playerTransform.rotation = Quaternion.Slerp(playerTransform.rotation, targetRotation,
-                    rotationSpeed * Time.deltaTime);
+                playerTransform.rotation = Quaternion.Slerp(playerTransform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            
             }
 
             if (!IsEnemyInChaseState())
@@ -179,17 +169,5 @@ public class PlayerController : MonoBehaviour
     private void TogglePlayerBody(bool isVisible)
     {
         playerBodyMeshRenderer.enabled = isVisible;
-    }
-    private Transform GetActiveCameraTransform()
-    {
-        if (cinemachineBrain.ActiveVirtualCamera != null)
-        {
-            CinemachineVirtualCamera activeVirtualCamera = cinemachineBrain.ActiveVirtualCamera as CinemachineVirtualCamera;
-            if (activeVirtualCamera != null)
-            {
-                return activeVirtualCamera.transform;
-            }
-        }
-        return null;
     }
 }
