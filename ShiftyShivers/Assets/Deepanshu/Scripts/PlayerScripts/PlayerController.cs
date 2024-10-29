@@ -12,7 +12,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float walkSpeed = 10f;
     [SerializeField] private float rotationSpeed = 10f;
     
-    [SerializeField] private MeshRenderer playerBodyMeshRenderer;
+    [SerializeField] private GameObject DefaultPlayerVisual;
+    [SerializeField] private Transform transformationHolder;
     [SerializeField] private List<GameObject> placeholderPrefabs;
     
     [SerializeField] private List<EnemyAIBase> nearbyEnemies;
@@ -109,8 +110,9 @@ public class PlayerController : MonoBehaviour
                 if (!IsPlayerHiding())
                 {
                     int randomIndex = Random.Range(0, placeholderPrefabs.Count);
-                    placeholderObject = Instantiate(placeholderPrefabs[randomIndex], playerTransform.position,
+                    placeholderObject = Instantiate(placeholderPrefabs[randomIndex], transformationHolder.position,
                         Quaternion.identity);
+                    placeholderObject.transform.SetParent(transformationHolder);
                 }
             }
 
@@ -168,6 +170,6 @@ public class PlayerController : MonoBehaviour
     }
     private void TogglePlayerBody(bool isVisible)
     {
-        playerBodyMeshRenderer.enabled = isVisible;
+        DefaultPlayerVisual.SetActive(isVisible);
     }
 }
