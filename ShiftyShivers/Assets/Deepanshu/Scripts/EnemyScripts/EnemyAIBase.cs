@@ -37,17 +37,22 @@ public class EnemyAIBase : MonoBehaviour
     private float idleTimer = 0f;
     private int currentPatrolPoint = 0;
     private AIState state;
+    
+   [SerializeField] private Animator anim;
+
 
     void Start()
     {
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>(); 
         currentPatrolPoint = 0;
         ChangeState(AIState.IDLE); 
+        anim = GetComponent<Animator>();
+        UpdateAnimationState();
+
     }
 
     void Update()
     {
-        if (state == AIState.DEATH) return;
         
         CheckForPlayer();
 
@@ -65,6 +70,9 @@ public class EnemyAIBase : MonoBehaviour
             case AIState.ATTACK:
                 Attack();
                 break;
+            case AIState.DEATH:
+                DeathState();
+                break;
         }
     }
 
@@ -72,6 +80,9 @@ public class EnemyAIBase : MonoBehaviour
     {
         state = newState;
         idleTimer = 0f; 
+        attackTimer = 0f;
+        UpdateAnimationState();
+
     }
 
     void CheckForPlayer()
@@ -160,6 +171,12 @@ public class EnemyAIBase : MonoBehaviour
     void Idle()
     {
         idleTimer += Time.deltaTime;
+        
+        if (agent.velocity != Vector3.zero)
+        {
+            agent.velocity = Vector3.zero;
+        }
+        
         if (idleTimer >= idleDelay)
         {
             ChangeState(AIState.PATROL);
@@ -282,12 +299,29 @@ public class EnemyAIBase : MonoBehaviour
     }
     public void DeathState()
     {
+        anim.SetBool("isIdling", false);
+        anim.SetBool("isWalking", false);
+        anim.SetBool("isRunning", false);
+        anim.SetBool("isAttacking", false);
+        anim.SetBool("isDead", true);
+        
         if (agent != null)
         {
-            agent.isStopped = true;
-            agent.enabled = false;
+            agent.isStopped = true;        
+            agent.enabled = false; 
         }
-        Destroy(gameObject, 2f);
+        this.enabled = false; 
     }
-    
+    private void UpdateAnimationState()
+    {
+        if (anim != null)
+        {
+            anim.SetBool("isIdling", state == AIState.IDLE);
+            anim.SetBool("isWalking", state == AIState.PATROL);
+            anim.SetBool("isRunning", state == AIState.CHASE);
+            anim.SetBool("isAttacking", state == AIState.ATTACK);
+            anim.SetBool("isDead", state == AIState.IDLE);
+        }
+    }
+
 }
