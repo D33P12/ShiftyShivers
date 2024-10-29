@@ -98,9 +98,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "PickUp",
+                    "name": "Interact",
                     "type": "Button",
-                    "id": "e04f4e4a-5590-426a-8b2f-865505f8e46e",
+                    "id": "ae0cf92f-3895-4ad7-95d0-99312c109da7",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -132,23 +132,23 @@
                 },
                 {
                     "name": "",
-                    "id": "d2f42278-4d7a-475a-9b91-f203cd1080a2",
+                    "id": "0b9955d7-794f-4f9d-9d68-b5bd6650a827",
                     "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PickUp",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "5f916eec-9409-4995-8a0f-f6b26b60ef10",
+                    "id": "a0c59b0a-03e8-4505-829a-e79c5beda433",
                     "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PickUp",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

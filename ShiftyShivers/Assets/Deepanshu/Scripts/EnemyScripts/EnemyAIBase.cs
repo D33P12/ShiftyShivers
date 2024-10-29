@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-enum AIState
+public enum AIState
 {
-    IDLE, PATROL, CHASE
+    IDLE, PATROL, CHASE ,DEATH, ATTACK
+
 }
+
 public class EnemyAIBase : MonoBehaviour
 {
     [SerializeField] GameObject playerObject;
@@ -24,6 +26,13 @@ public class EnemyAIBase : MonoBehaviour
     
     [SerializeField] List<HidingZone> hidingZone;
     
+    [SerializeField] public float damage;
+    public PlayerHealthScript playerHealth;
+    [SerializeField] float attackRange = 2f;
+    [SerializeField] float attackCooldown = 1f;
+    [SerializeField] float attackTimer = 0f;
+    
+    public AIState CurrentState => state;
     private UnityEngine.AI.NavMeshAgent agent;
     private float idleTimer = 0f;
     private int currentPatrolPoint = 0;
@@ -38,6 +47,8 @@ public class EnemyAIBase : MonoBehaviour
 
     void Update()
     {
+        if (state == AIState.DEATH) return;
+        
         CheckForPlayer();
 
         switch (state)
@@ -50,6 +61,9 @@ public class EnemyAIBase : MonoBehaviour
                 break;
             case AIState.CHASE:
                 Chase();
+                break;
+            case AIState.ATTACK:
+                Attack();
                 break;
         }
     }
@@ -64,7 +78,7 @@ public class EnemyAIBase : MonoBehaviour
     {
         bool playerIsStationary = playerObject.GetComponent<PlayerController>().IsPlayerStationary();
 
-        if (!IsPlayerInAnyHidingZone() && IsPlayerInCone() && DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
+        if (!IsPlayerInAnyHidingZone() && IsPlayerInCone() && DistanceCheck(transform.position, playerObject.transform.position, playerDistance) && state != AIState.ATTACK)
         {
             if (playerIsStationary)
             {
@@ -110,7 +124,7 @@ public class EnemyAIBase : MonoBehaviour
     void AlertNearbyEnemies(Vector3 lastKnownPosition)
     {
         foreach (EnemyAIBase enemy in nearbyEnemies)
-        {
+        { 
             enemy.ReceiveAlert(lastKnownPosition);
         }
     }
@@ -124,7 +138,7 @@ public class EnemyAIBase : MonoBehaviour
         }
     }
     
-    bool IsPlayerInCone()
+    public bool IsPlayerInCone()
     {
         if (playerObject == null) return false;
 
@@ -170,19 +184,63 @@ public class EnemyAIBase : MonoBehaviour
         return (currentPatrolPoint + 1) % patrolPoints.Count;
     }
 
-    void Chase()
+    public void Chase()
     {
-        if (DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
+        if (DistanceCheck(transform.position, playerObject.transform.position, attackRange))
         {
-            SetDestination(playerObject.transform.position);
-            FacePlayer(); 
-            idleTimer = 0f; 
+            ChangeState(AIState.ATTACK);
+        }
+        else if (DistanceCheck(transform.position, playerObject.transform.position, playerDistance))
+        {
+            if (IsPlayerInCone())
+            {
+                SetDestination(playerObject.transform.position);
+            }
+            else
+            {
+                idleTimer += Time.deltaTime;
+                if (idleTimer >= idleDelay)
+                {
+                    ChangeState(AIState.IDLE);
+                }
+            }
         }
         else
         {
             idleTimer += Time.deltaTime;
+            if (idleTimer >= idleDelay)
+            {
+                ChangeState(AIState.IDLE);
+            }
+        }
+
+        FacePlayer();
+    }
+    void Attack()
+    {
+        if (DistanceCheck(transform.position, playerObject.transform.position, attackRange))
+        {
+            attackTimer += Time.deltaTime;
+            if (attackTimer >= attackCooldown)
+            {
+                PerformAttack();
+                attackTimer = 0f;
+            }
+        }
+        else
+        {
+            ChangeState(AIState.CHASE);
+        }
+        FacePlayer();
+    }
+    void PerformAttack()
+    {
+        if (playerHealth != null)
+        {
+           GameManager.phealth -= damage;
         }
     }
+
 
     void SetDestination(Transform destinationTransform)
     {
@@ -222,5 +280,14 @@ public class EnemyAIBase : MonoBehaviour
         Gizmos.DrawRay(transform.position, rightBoundary);
         Gizmos.DrawWireSphere(transform.position, playerDistance); 
     }
-
+    public void DeathState()
+    {
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            agent.enabled = false;
+        }
+        Destroy(gameObject, 2f);
+    }
+    
 }

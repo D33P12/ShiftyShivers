@@ -120,9 +120,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""PickUp"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
-                    ""id"": ""e04f4e4a-5590-426a-8b2f-865505f8e46e"",
+                    ""id"": ""ae0cf92f-3895-4ad7-95d0-99312c109da7"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -154,23 +154,23 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""d2f42278-4d7a-475a-9b91-f203cd1080a2"",
+                    ""id"": ""0b9955d7-794f-4f9d-9d68-b5bd6650a827"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""PickUp"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""5f916eec-9409-4995-8a0f-f6b26b60ef10"",
+                    ""id"": ""a0c59b0a-03e8-4505-829a-e79c5beda433"",
                     ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""PickUp"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -185,7 +185,7 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
         // PlayerInteract
         m_PlayerInteract = asset.FindActionMap("PlayerInteract", throwIfNotFound: true);
         m_PlayerInteract_OptionMenu = m_PlayerInteract.FindAction("OptionMenu", throwIfNotFound: true);
-        m_PlayerInteract_PickUp = m_PlayerInteract.FindAction("PickUp", throwIfNotFound: true);
+        m_PlayerInteract_Interact = m_PlayerInteract.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -294,13 +294,13 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_PlayerInteract;
     private List<IPlayerInteractActions> m_PlayerInteractActionsCallbackInterfaces = new List<IPlayerInteractActions>();
     private readonly InputAction m_PlayerInteract_OptionMenu;
-    private readonly InputAction m_PlayerInteract_PickUp;
+    private readonly InputAction m_PlayerInteract_Interact;
     public struct PlayerInteractActions
     {
         private @Inputs m_Wrapper;
         public PlayerInteractActions(@Inputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @OptionMenu => m_Wrapper.m_PlayerInteract_OptionMenu;
-        public InputAction @PickUp => m_Wrapper.m_PlayerInteract_PickUp;
+        public InputAction @Interact => m_Wrapper.m_PlayerInteract_Interact;
         public InputActionMap Get() { return m_Wrapper.m_PlayerInteract; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -313,9 +313,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @OptionMenu.started += instance.OnOptionMenu;
             @OptionMenu.performed += instance.OnOptionMenu;
             @OptionMenu.canceled += instance.OnOptionMenu;
-            @PickUp.started += instance.OnPickUp;
-            @PickUp.performed += instance.OnPickUp;
-            @PickUp.canceled += instance.OnPickUp;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         private void UnregisterCallbacks(IPlayerInteractActions instance)
@@ -323,9 +323,9 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
             @OptionMenu.started -= instance.OnOptionMenu;
             @OptionMenu.performed -= instance.OnOptionMenu;
             @OptionMenu.canceled -= instance.OnOptionMenu;
-            @PickUp.started -= instance.OnPickUp;
-            @PickUp.performed -= instance.OnPickUp;
-            @PickUp.canceled -= instance.OnPickUp;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         public void RemoveCallbacks(IPlayerInteractActions instance)
@@ -350,6 +350,6 @@ public partial class @Inputs: IInputActionCollection2, IDisposable
     public interface IPlayerInteractActions
     {
         void OnOptionMenu(InputAction.CallbackContext context);
-        void OnPickUp(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
 }
