@@ -9,7 +9,8 @@ public class AssassinateScript : MonoBehaviour
     [SerializeField] private InputManager inputManager;
     [SerializeField] private List<GameObject> enemies;
     private GameObject currentEnemy;
-
+    
+    [SerializeField] Animator animator;
     private void OnEnable()
     {
         inputManager.onInteract += OnInteract;
@@ -52,13 +53,16 @@ public class AssassinateScript : MonoBehaviour
 
     private void KillEnemy(GameObject enemy)
     {
+       
         EnemyAIBase enemyScript = enemy.GetComponent<EnemyAIBase>();
         if (enemyScript != null)
         {
+           
             enemyScript.DeathState(); 
             Debug.Log("Enemy killed: " + enemy.name);
             enemies.Remove(enemy);
             currentEnemy = null; 
         }
+     
     }
 }

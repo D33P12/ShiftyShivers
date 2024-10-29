@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI alertCountdownText; 
     private float alertTimer = 0f;
     
+    [SerializeField] Animator animator;
+    
     private GameObject placeholderObject;
     private bool isMoving;
     private float idleTimer = 0f;
@@ -32,6 +34,7 @@ public class PlayerController : MonoBehaviour
     {
         //  Cursor.lockState = CursorLockMode.Locked;
         isMoving = true;
+        animator = GetComponent<Animator>();
     }
     private void OnEnable()
     {
@@ -46,6 +49,11 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
     }
+    private void Update()
+    {
+        UpdateAnimation();
+    }
+
     private void OnMove(Vector2 inputValue)
     {
         _movementDirection = new Vector3(inputValue.x, 0, inputValue.y);
@@ -172,4 +180,22 @@ public class PlayerController : MonoBehaviour
     {
         DefaultPlayerVisual.SetActive(isVisible);
     }
+    
+    private void UpdateAnimation()
+    {
+
+        Vector3 localVelocity = playerTransform.InverseTransformDirection(playerRigidbody.velocity);
+
+        float forwardSpeed = localVelocity.x;
+        float sideSpeed = localVelocity.z;
+
+
+        sideSpeed = Mathf.Clamp(sideSpeed, -1f, 1f);
+
+
+        animator.SetFloat("Y", forwardSpeed);
+        animator.SetFloat("X", sideSpeed);
+
+    }
+
 }
