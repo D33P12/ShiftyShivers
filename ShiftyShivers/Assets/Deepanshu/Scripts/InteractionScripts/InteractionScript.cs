@@ -85,7 +85,6 @@ public class InteractionScript : MonoBehaviour
             treat.EatenState();
         }
         powerCount.text = "PowerUP: " + GameManager.PowerUP + "/5";
-       // Destroy(powerUp);
         nearbyPowerUp = null;
         
     }

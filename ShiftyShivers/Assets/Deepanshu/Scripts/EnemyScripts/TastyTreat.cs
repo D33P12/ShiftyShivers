@@ -21,11 +21,13 @@ public class TastyTreat : MonoBehaviour
     [SerializeField] private float fieldOfView = 60f;
     [SerializeField] private Transform player;
     [SerializeField] private List<Transform> patrolPoints;
+    [SerializeField] private Animator anim;
     
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         ChangeState(TreatState.IDLE);
+        UpdateAnimationState();
     }
 
     private void Update()
@@ -53,6 +55,7 @@ public class TastyTreat : MonoBehaviour
         state = newState;
         idleTimer = 0f;
         runawayTimer = 0f;
+        UpdateAnimationState();
     }
 
     private void Idle()
@@ -70,6 +73,10 @@ public class TastyTreat : MonoBehaviour
 
     internal void EatenState()
     {
+        anim.SetBool("isIdling", false);
+        anim.SetBool("isWalking", false);
+        anim.SetBool("isRunning", false);
+        anim.SetBool("isDead", true);
         if (agent != null)
         {
             agent.isStopped = true;        
@@ -126,5 +133,15 @@ public class TastyTreat : MonoBehaviour
         Gizmos.DrawRay(transform.position, leftBoundary);
         Gizmos.DrawRay(transform.position, rightBoundary);
         Gizmos.DrawWireSphere(transform.position, detectionRange);
+    }
+    private void UpdateAnimationState()
+    {
+        if (anim != null)
+        {
+            anim.SetBool("isIdling", state == TreatState.IDLE);
+            anim.SetBool("isWalking", state == TreatState.WONDER);
+            anim.SetBool("isRunning", state == TreatState.RUNAWAY);
+           // anim.SetBool("isAttacking", state == TreatState.DEATH);
+        }
     }
 }
