@@ -9,7 +9,8 @@ public class InteractionScript : MonoBehaviour
     [SerializeField] private InputManager inputManager;
     public TextMeshProUGUI powerCount;
     public TextMeshProUGUI keyCard;
-    
+    [SerializeField] private List<TastyTreat> tastyTreats;
+  
     public int PowerUPs { get; private set; } 
     public int KeyCards { get; private set; }
     
@@ -31,6 +32,7 @@ public class InteractionScript : MonoBehaviour
         if (other.CompareTag("PowerUp"))
         {
             nearbyPowerUp = other.gameObject;
+            
         }
         else if (other.CompareTag("Keycard"))
         {
@@ -78,16 +80,19 @@ public class InteractionScript : MonoBehaviour
     {
         GameManager.PowerUP += 1;
         PowerUPs += 1;
-
+        foreach (TastyTreat treat in tastyTreats)
+        {
+            treat.EatenState();
+        }
         powerCount.text = "PowerUP: " + GameManager.PowerUP + "/5";
-        Destroy(powerUp);
+       // Destroy(powerUp);
         nearbyPowerUp = null;
+        
     }
     private void CollectKeyCard(GameObject keycard)
     {
         GameManager.keycard += 1;
         KeyCards += 1;
-
         keyCard.text = "KeyCard: " + GameManager.keycard;
         Destroy(keycard);
         nearbyKeycard = null;

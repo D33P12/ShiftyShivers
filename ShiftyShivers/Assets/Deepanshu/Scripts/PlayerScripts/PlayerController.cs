@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Animator animator;
     
     private GameObject placeholderObject;
+    public bool IsVisible => DefaultPlayerVisual.activeSelf;
     private bool isMoving;
     private float idleTimer = 0f;
     private bool disablePlaceholder = false;
@@ -144,7 +145,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    private bool IsPlayerHiding()
+    internal bool IsPlayerHiding()
     {
         foreach (var zone in hidingZone)
         {

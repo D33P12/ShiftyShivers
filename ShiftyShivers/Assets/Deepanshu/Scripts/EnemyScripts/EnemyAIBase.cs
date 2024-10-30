@@ -53,7 +53,6 @@ public class EnemyAIBase : MonoBehaviour
 
     void Update()
     {
-        
         CheckForPlayer();
 
         switch (state)
@@ -337,7 +336,7 @@ public class EnemyAIBase : MonoBehaviour
             anim.SetBool("isWalking", state == AIState.PATROL);
             anim.SetBool("isRunning", state == AIState.CHASE);
             anim.SetBool("isAttacking", state == AIState.ATTACK);
-            anim.SetBool("isDead", state == AIState.IDLE);
+           // anim.SetBool("isDead", state == AIState.IDLE);
         }
     }
 
