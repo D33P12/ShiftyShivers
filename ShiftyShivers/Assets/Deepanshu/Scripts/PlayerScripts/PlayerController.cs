@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     private GameObject placeholderObject;
     private bool isMoving;
     private float idleTimer = 0f;
+    private bool disablePlaceholder = false;
     
     private Vector3 _movementDirection;
     private void Start()
@@ -176,26 +177,21 @@ public class PlayerController : MonoBehaviour
             enemy.ReceiveAlert(playerTransform.position);
         }
     }
-    private void TogglePlayerBody(bool isVisible)
+    public void TogglePlayerBody(bool isVisible)
     {
         DefaultPlayerVisual.SetActive(isVisible);
     }
-    
     private void UpdateAnimation()
     {
-
         Vector3 localVelocity = playerTransform.InverseTransformDirection(playerRigidbody.velocity);
 
         float forwardSpeed = localVelocity.x;
         float sideSpeed = localVelocity.z;
-
-
+        
         sideSpeed = Mathf.Clamp(sideSpeed, -1f, 1f);
-
-
+        
         animator.SetFloat("Y", forwardSpeed);
         animator.SetFloat("X", sideSpeed);
-
     }
 
 }

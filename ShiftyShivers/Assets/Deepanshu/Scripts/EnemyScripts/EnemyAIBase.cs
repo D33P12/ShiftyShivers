@@ -158,7 +158,24 @@ public class EnemyAIBase : MonoBehaviour
 
         float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
-        return angleToPlayer < fieldOfView / 2f; 
+        if (angleToPlayer < fieldOfView / 2f)
+        {
+            Ray ray = new Ray(transform.position, directionToPlayer.normalized);
+            RaycastHit hit;
+
+            int layerMask = LayerMask.GetMask("Obstacle");
+
+            if (Physics.Raycast(ray, out hit, playerDistance, layerMask))
+            {
+                if (hit.transform != playerObject.transform)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
     }
 
 

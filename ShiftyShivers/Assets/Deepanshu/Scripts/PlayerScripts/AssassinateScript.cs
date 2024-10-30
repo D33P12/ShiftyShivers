@@ -53,16 +53,13 @@ public class AssassinateScript : MonoBehaviour
 
     private void KillEnemy(GameObject enemy)
     {
-       
         EnemyAIBase enemyScript = enemy.GetComponent<EnemyAIBase>();
         if (enemyScript != null)
         {
-           
             enemyScript.DeathState(); 
             Debug.Log("Enemy killed: " + enemy.name);
             enemies.Remove(enemy);
             currentEnemy = null; 
         }
-     
     }
 }
