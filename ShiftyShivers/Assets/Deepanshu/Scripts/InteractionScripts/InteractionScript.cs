@@ -5,9 +5,8 @@ using TMPro;
 
 public class InteractionScript : MonoBehaviour
 {
-    [SerializeField] private GameObject doorRef;
+       [SerializeField] private GameObject doorRef;
        [SerializeField] private InputManager inputManager;
-       public TextMeshProUGUI powerCount;
        public TextMeshProUGUI keyCard;
        [SerializeField] private List<TastyTreat> tastyTreats;
      
@@ -17,7 +16,7 @@ public class InteractionScript : MonoBehaviour
        private GameObject doorSwitch;
        private GameObject nearbyPowerUp;
        private GameObject nearbyKeycard;
-       
+    
        private TastyTreat nearbyTastyTreat;
        private void OnEnable()
        {
@@ -79,11 +78,9 @@ public class InteractionScript : MonoBehaviour
        }
        private void CollectPowerUp(GameObject powerUp)
        {
-           GameManager.PowerUP += 1;
-       
            TastyTreat closestTreat = null;
            float closestDistance = Mathf.Infinity;
-   
+           
            foreach (TastyTreat treat in tastyTreats)
            {
                float distance = Vector3.Distance(transform.position, treat.transform.position);
@@ -97,7 +94,6 @@ public class InteractionScript : MonoBehaviour
            {
                closestTreat.EatenState();
            }
-           powerCount.text = "PowerUP: " + GameManager.PowerUP + "/5";
            nearbyPowerUp = null;
        }
        private void CollectKeyCard(GameObject keycard)

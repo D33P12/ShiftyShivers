@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
-
+using TMPro;
 public enum TreatState
 {
     IDLE, DEATH, WONDER, RUNAWAY
@@ -15,17 +15,22 @@ public class TastyTreat : MonoBehaviour
     private float idleTimer = 0f;
     private TreatState state;
     private float runawayTimer = 0f;
+    public TextMeshProUGUI powerCount;
     
     [SerializeField] private float runawayDuration = 5f;
     [SerializeField] private float detectionRange = 10f;
     [SerializeField] private float fieldOfView = 60f;
     [SerializeField] private Transform player;
     [SerializeField] private List<Transform> patrolPoints;
-    
+    [SerializeField] private Collider collider;
+    [SerializeField] private Animator anim;
+    [SerializeField] private float runawayToWonderTime = 5f;
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         ChangeState(TreatState.IDLE);
+        anim = GetComponent<Animator>();
+        UpdateAnimationState();
     }
 
     private void Update()
@@ -53,6 +58,7 @@ public class TastyTreat : MonoBehaviour
         state = newState;
         idleTimer = 0f;
         runawayTimer = 0f;
+        UpdateAnimationState();
     }
 
     private void Idle()
@@ -70,11 +76,24 @@ public class TastyTreat : MonoBehaviour
 
     internal void EatenState()
     {
+        anim.SetBool("isIdling", false);
+        anim.SetBool("isWalking", false);
+        anim.SetBool("isRunning", false);
+        anim.SetBool("isDead", true);
+        
         if (agent != null)
         {
-            agent.isStopped = true;        
-            agent.enabled = false; 
+            agent.isStopped = true;
+            agent.enabled = false;
         }
+        if (collider != null && collider.enabled)
+        {
+            collider.enabled = false;
+        
+            GameManager.PowerUP += 1;
+            powerCount.text = "PowerUP: " + GameManager.PowerUP + "/5";
+        }
+      
         this.enabled = false; 
     }
 
@@ -89,6 +108,13 @@ public class TastyTreat : MonoBehaviour
 
     private void RunawayState()
     {
+        runawayTimer += Time.deltaTime;
+
+        if (runawayTimer >=runawayToWonderTime)
+        {
+            ChangeState(TreatState.WONDER);
+            return;
+        }
         Vector3 directionAwayFromPlayer = (transform.position - player.position).normalized;
         Vector3 randomRunawayPoint = transform.position + directionAwayFromPlayer * detectionRange;
 
@@ -127,4 +153,14 @@ public class TastyTreat : MonoBehaviour
         Gizmos.DrawRay(transform.position, rightBoundary);
         Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
+    private void UpdateAnimationState()
+    {
+        if (anim != null)
+        {
+            anim.SetBool("isIdling", state == TreatState.IDLE);
+            anim.SetBool("isWalking", state == TreatState.WONDER);
+            anim.SetBool("isRunning", state == TreatState.RUNAWAY);
+        }
+    }
+
 }
