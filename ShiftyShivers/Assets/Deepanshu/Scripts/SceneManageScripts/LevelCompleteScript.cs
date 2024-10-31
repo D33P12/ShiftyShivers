@@ -5,7 +5,7 @@ using UnityEngine;
 public class LevelCompleteScript : MonoBehaviour
 {
     [SerializeField] private GameObject LevelCompleteCanvas;
-    [SerializeField] private int requiredPowerUp=15;
+    [SerializeField] private int requiredPowerUp;
     
     private void Start()
     {
@@ -13,7 +13,7 @@ public class LevelCompleteScript : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && GameManager.PowerUP == requiredPowerUp)
+        if (other.CompareTag("Player") && GameManager.PowerUP >= requiredPowerUp)
         {
             LevelCompleteCanvas.SetActive(true);
             Time.timeScale = 0f;
