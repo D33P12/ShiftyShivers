@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using TMPro;
 public class AssassinateScript : MonoBehaviour
 {
     [SerializeField] private int NumbberOfPowerUp = 3;
     [SerializeField] private InputManager inputManager;
     [SerializeField] private List<GameObject> enemies;
     private GameObject currentEnemy;
-    
+    public TextMeshProUGUI powerCount;
     [SerializeField] Animator animator;
     private void OnEnable()
     {
@@ -47,7 +47,14 @@ public class AssassinateScript : MonoBehaviour
     {
         if (isInteracting && currentEnemy != null && GameManager.PowerUP >= NumbberOfPowerUp)
         {
+            // Kill the enemy
             KillEnemy(currentEnemy);
+        
+            // Deduct the required number of power-ups
+            GameManager.PowerUP -= NumbberOfPowerUp;
+
+            // Update the power-up count display
+            powerCount.text = "PowerUP: " + GameManager.PowerUP + "/5";
         }
     }
 

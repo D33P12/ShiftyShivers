@@ -80,7 +80,7 @@ public class InteractionScript : MonoBehaviour
        {
            TastyTreat closestTreat = null;
            float closestDistance = Mathf.Infinity;
-           
+    
            foreach (TastyTreat treat in tastyTreats)
            {
                float distance = Vector3.Distance(transform.position, treat.transform.position);
@@ -93,6 +93,9 @@ public class InteractionScript : MonoBehaviour
            if (closestTreat != null)
            {
                closestTreat.EatenState();
+               PowerUPs += 1; 
+               GameManager.PowerUP = PowerUPs;
+               Debug.Log("Collected a power-up. Total: " + PowerUPs);
            }
            nearbyPowerUp = null;
        }
