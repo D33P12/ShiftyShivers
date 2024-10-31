@@ -9,7 +9,8 @@ public class AssassinateScript : MonoBehaviour
     [SerializeField] private InputManager inputManager;
     [SerializeField] private List<GameObject> enemies;
     private GameObject currentEnemy;
-
+    
+    [SerializeField] Animator animator;
     private void OnEnable()
     {
         inputManager.onInteract += OnInteract;

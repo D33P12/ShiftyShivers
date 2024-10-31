@@ -23,15 +23,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI alertCountdownText; 
     private float alertTimer = 0f;
     
+    [SerializeField] Animator animator;
+    
     private GameObject placeholderObject;
+    public bool IsVisible => DefaultPlayerVisual.activeSelf;
     private bool isMoving;
     private float idleTimer = 0f;
+    private bool disablePlaceholder = false;
     
     private Vector3 _movementDirection;
     private void Start()
     {
         //  Cursor.lockState = CursorLockMode.Locked;
         isMoving = true;
+        animator = GetComponent<Animator>();
     }
     private void OnEnable()
     {
@@ -46,6 +51,11 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
     }
+    private void Update()
+    {
+        UpdateAnimation();
+    }
+
     private void OnMove(Vector2 inputValue)
     {
         _movementDirection = new Vector3(inputValue.x, 0, inputValue.y);
@@ -135,7 +145,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    private bool IsPlayerHiding()
+    internal bool IsPlayerHiding()
     {
         foreach (var zone in hidingZone)
         {
@@ -168,8 +178,21 @@ public class PlayerController : MonoBehaviour
             enemy.ReceiveAlert(playerTransform.position);
         }
     }
-    private void TogglePlayerBody(bool isVisible)
+    public void TogglePlayerBody(bool isVisible)
     {
         DefaultPlayerVisual.SetActive(isVisible);
     }
+    private void UpdateAnimation()
+    {
+        Vector3 localVelocity = playerTransform.InverseTransformDirection(playerRigidbody.velocity);
+
+        float forwardSpeed = localVelocity.x;
+        float sideSpeed = localVelocity.z;
+        
+        sideSpeed = Mathf.Clamp(sideSpeed, -1f, 1f);
+        
+        animator.SetFloat("Y", forwardSpeed);
+        animator.SetFloat("X", sideSpeed);
+    }
+
 }

@@ -32,7 +32,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6057286486129676348}
   - {fileID: 6747238951242869758}
   m_Father: {fileID: 9102413715623438313}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -350,6 +349,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6057286486129676348}
   - {fileID: 6687969317151614000}
   - {fileID: 1321182208239902997}
   m_Father: {fileID: 0}
@@ -381,6 +381,11 @@ MonoBehaviour:
   hidingZone:
   - {fileID: 0}
   - {fileID: 0}
+  damage: 0
+  playerHealth: {fileID: 0}
+  attackRange: 2
+  attackCooldown: 1
+  attackTimer: 0
 --- !u!195 &8982408850842391184
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -429,11 +434,11 @@ Transform:
   m_GameObject: {fileID: 6214017575416940578}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.86, y: -0.76999986, z: 4.01}
+  m_LocalPosition: {x: 0.86, y: -0.76999974, z: 4.01}
   m_LocalScale: {x: 1.7420381, y: 1.0606002, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6687969317151614000}
+  m_Father: {fileID: 9102413715623438313}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!212 &8000503426004826464
 SpriteRenderer:
