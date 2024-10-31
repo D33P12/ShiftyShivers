@@ -5,15 +5,16 @@ using TMPro;
 
 public class InteractionScript : MonoBehaviour
 {
-       [SerializeField] private GameObject doorRef;
+       [SerializeField] private List<GameObject> doors;
+       private GameObject nearbyDoor;
        [SerializeField] private InputManager inputManager;
        public TextMeshProUGUI keyCard;
        [SerializeField] private List<TastyTreat> tastyTreats;
-     
+    
        public int PowerUPs { get; private set; } 
        public int KeyCards { get; private set; }
        
-       private GameObject doorSwitch;
+    
        private GameObject nearbyPowerUp;
        private GameObject nearbyKeycard;
     
@@ -40,7 +41,7 @@ public class InteractionScript : MonoBehaviour
            }
            else if (other.CompareTag("Door"))
            {
-               doorSwitch = other.gameObject;
+               nearbyDoor = other.gameObject;
            }
        }
        private void OnTriggerExit(Collider other)
@@ -53,9 +54,9 @@ public class InteractionScript : MonoBehaviour
            {
                nearbyKeycard = null;
            }
-           else if (other.CompareTag("Door") && doorSwitch == other.gameObject)
+           else if (other.CompareTag("Door") && nearbyDoor == other.gameObject)
            {
-               doorSwitch = null;
+               nearbyDoor = null;
            }
        }
        private void OnInteract(bool isInteracting)
@@ -70,9 +71,9 @@ public class InteractionScript : MonoBehaviour
                {
                    CollectKeyCard(nearbyKeycard);
                }
-               else if (doorSwitch != null)
+               else if (nearbyDoor != null)
                {
-                   DoorToggle(doorSwitch);
+                   DoorToggle(nearbyDoor);
                }
            }
        }
@@ -107,14 +108,12 @@ public class InteractionScript : MonoBehaviour
            Destroy(keycard);
            nearbyKeycard = null;
        }
-       private void DoorToggle(GameObject doorSwitch)
+       private void DoorToggle(GameObject door)
        {
            if (GameManager.keycard > 0)
            {
-               if (doorRef != null)
-               {
-                   doorRef.SetActive(!doorRef.activeSelf);
-               }
+               door.SetActive(!door.activeSelf);
+               Debug.Log("Toggled door state.");
            }
            else
            {
