@@ -1,22 +1,27 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
 public class PlayerHealthScript : MonoBehaviour
 {
     
     [SerializeField] public float pmaxhealth;
     [SerializeField] private TextMeshProUGUI healthText; 
     [SerializeField] private GameObject GameOverCanvas;
+    private float previousHealth;
     void Start()
     {
         pmaxhealth = GameManager.phealth; 
         UpdateHealthUI();
+        previousHealth = GameManager.phealth;
     }
 
     void Update()
     {
         UpdateHealthUI();
+        if (GameManager.phealth < previousHealth)
+        {
+            SoundManager.Instance.PlayAudio(AudioType.PLAYERTAKEDAMAGE);
+            previousHealth = GameManager.phealth;
+        }
         if ( GameManager.phealth <= 0)
         {
             GameOver();

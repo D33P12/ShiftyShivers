@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
 using TMPro;
-using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
@@ -34,7 +32,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _movementDirection;
     private void Start()
     {
-        //  Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
         isMoving = true;
         animator = GetComponent<Animator>();
     }
@@ -70,6 +68,7 @@ public class PlayerController : MonoBehaviour
                     Destroy(placeholderObject);
                 }
             }
+            SoundManager.Instance.PlayAudio(AudioType.PLAYERWALK);
             isMoving = true;
             idleTimer = 0f;
         }
@@ -125,7 +124,7 @@ public class PlayerController : MonoBehaviour
                     placeholderObject.transform.SetParent(transformationHolder);
                 }
             }
-
+            SoundManager.Instance.PlayAudio(AudioType.PLAYERIDLE);
             isMoving = false;
         }
         else if(!IsPlayerHiding())

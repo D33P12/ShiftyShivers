@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -61,15 +60,19 @@ public class EnemyAIBase : MonoBehaviour
                 Idle();
                 break;
             case AIState.PATROL:
+                SoundManager.Instance.PlayAudio(AudioType. EPATROL);
                 Patrol();
                 break;
             case AIState.CHASE:
+                SoundManager.Instance.PlayAudio(AudioType.ECHASE);
                 Chase();
                 break;
             case AIState.ATTACK:
+                
                 Attack();
                 break;
             case AIState.DEATH:
+               
                 DeathState();
                 break;
         }

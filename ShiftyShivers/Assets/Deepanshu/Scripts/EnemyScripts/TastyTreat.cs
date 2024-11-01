@@ -44,9 +44,11 @@ public class TastyTreat : MonoBehaviour
                 EatenState();
                 break;
             case TreatState.WONDER:
+                SoundManager.Instance.PlayAudio(AudioType.TWONDER);
                 WonderState();
                 break;
             case TreatState.RUNAWAY:
+                SoundManager.Instance.PlayAudio(AudioType.TRUNAWAY);
                 RunawayState();
                 break;
         }
