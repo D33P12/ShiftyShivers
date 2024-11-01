@@ -24,9 +24,7 @@ public class PlayerController : MonoBehaviour
     private float alertTimer = 0f;
     
     [SerializeField] Animator animator;
-    [SerializeField] private CinemachineBrain cinemachineBrain;
-    [SerializeField] private List<GameObject> cameraPrefabs; 
-    private List<CinemachineVirtualCamera> virtualCameras = new List<CinemachineVirtualCamera>();
+    
     private GameObject placeholderObject;
     public bool IsVisible => DefaultPlayerVisual.activeSelf;
     private bool isMoving;
@@ -39,15 +37,6 @@ public class PlayerController : MonoBehaviour
         //  Cursor.lockState = CursorLockMode.Locked;
         isMoving = true;
         animator = GetComponent<Animator>();
-        foreach (var camPrefab in cameraPrefabs)
-        {
-            GameObject camInstance = Instantiate(camPrefab);
-            var virtualCam = camInstance.GetComponent<CinemachineVirtualCamera>();
-            if (virtualCam != null)
-            {
-                virtualCameras.Add(virtualCam);
-            }
-        }
     }
     private void OnEnable()
     {
@@ -69,21 +58,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnMove(Vector2 inputValue)
     {
-        if (cinemachineBrain == null || cinemachineBrain.ActiveVirtualCamera == null)
-        {
-            _movementDirection = new Vector3(inputValue.x, 0, inputValue.y);
-        }
-        else
-        {
-            var camForward = cinemachineBrain.ActiveVirtualCamera.VirtualCameraGameObject.transform.forward;
-            var camRight = cinemachineBrain.ActiveVirtualCamera.VirtualCameraGameObject.transform.right;
-
-            camForward.y = 0;  
-            camRight.y = 0;
-
-            _movementDirection = camForward.normalized * inputValue.y + camRight.normalized * inputValue.x;
-        }
-
+        _movementDirection = new Vector3(inputValue.x, 0, inputValue.y);
         
         if (_movementDirection != Vector3.zero && !isMoving)
         {
@@ -219,11 +194,5 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("Y", forwardSpeed);
         animator.SetFloat("X", sideSpeed);
     }
-    public void SetActiveCamera(int index)
-    {
-        for (int i = 0; i < virtualCameras.Count; i++)
-        {
-            virtualCameras[i].gameObject.SetActive(i == index);
-        }
-    }
+
 }
